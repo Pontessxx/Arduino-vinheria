@@ -1,5 +1,4 @@
 
-</style>
 <h1>Projeto Arduino | Tinkercad</h1>
 link:
 https://www.tinkercad.com/things/2aYy1lji3uj

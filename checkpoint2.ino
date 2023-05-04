@@ -60,7 +60,7 @@ void loop() {
     lcd.setCursor(0, 1);
     lcd.print("Condicoes ruins");
     delay(2000);
-	}
+}
 else{
   // Luminosidade baixa - liga led verde e desliga os outros
   digitalWrite(GREEN_LED_PIN, HIGH);
@@ -74,14 +74,25 @@ else{
   } else {
     lcd.print("LUZ: BOA");
   }
+    if (temperaturaC <= 16 && temperaturaC >= 8) {
     lcd.setCursor(0, 1);
-  if (temperaturaC < 16) {
     lcd.print("TEMP: BOA");
-  } else if (temperaturaC > 25) {
-    lcd.print("TEMP: ALTA");
-  } else {
+    digitalWrite(GREEN_LED_PIN, HIGH);
+    digitalWrite(YELLOW_LED_PIN, LOW);
+    digitalWrite(RED_LED_PIN, LOW);
+} else if (temperaturaC >= 17 && temperaturaC <= 25) {
+      lcd.setCursor(0, 1);
     lcd.print("TEMP: MEDIA");
-  }
+    digitalWrite(GREEN_LED_PIN, LOW);
+    digitalWrite(YELLOW_LED_PIN, HIGH);
+    digitalWrite(RED_LED_PIN, LOW);
+} else {
+      lcd.setCursor(0, 1);
+    lcd.print("TEMP: RUIM");
+    digitalWrite(GREEN_LED_PIN, LOW);
+    digitalWrite(YELLOW_LED_PIN, LOW);
+    digitalWrite(RED_LED_PIN, HIGH);
+}
     delay(2000);
 }
   lcd.setCursor(0, 1);
@@ -91,6 +102,7 @@ else{
   lcd.setCursor(0, 0);
   lcd.print("LUZ: ");
   lcd.print(lightValue);
+  lcd.print(" ");
   delay(2000);
   // imprime valor lido pelo arduino (0 a 1023)
   tensao_ms = (lightValue * 5.0) / 1024.0;

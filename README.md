@@ -18,6 +18,20 @@ https://www.tinkercad.com/things/2aYy1lji3uj
 <p>O projeto visa o case da Vinheria Agnello, levando em consideração a preocupação da exposição dos vinhos ao UV, pois o vinho sofre oxidação resultando em um vinagre (nada bom para os negócios). O vinho é produzido através da fermentação de uvas, é durante este processo que os açúcares (glicose e frutose) são transformados em etanol ao ser exposto a luz agindo junto com o vidro (caso seja transparente potencializa) oxida.
 Sendo assim criamos um projeto utilizando o Arduino e outros materiais que possibilita alertar quando a luminosidade do local esteja alta aciona um buzzer (aparelho sonoro) por 3 segundos, caso esteja uma luz incidente mediana acende uma luz amarela, caso esteja com luminosidade baixa o led verde estará aceso.</p>
 
+<h4>Materiais:</h4>
+<ul>
+    <li>1	Arduino Uno R3</li>
+    <li>1	Vermelho LED</li>
+    <li>1	Amarelo LED</li>
+    <li>1	Verde LED</li>
+    <li>4	330 Ω Resistor</li>
+    <li>1	Fotorresistor</li>
+    <li>1	Piezo</li>
+    <li>1	10 kΩ Resistor</li>
+    <li>1	LCD 16 x 2</li>
+    <li>1	250 kΩ Potenciômetro</li>
+    <li>1	Sensor de temperatura [TMP36]</li>
+ </ul>
 <h4>Mas o que é o LDR:</h4>
 
 <p>Light Dependent Resistor, O LDR (Light Dependent Resistor) é um tipo de resistor que muda sua resistência elétrica conforme a intensidade de luz que incide sobre ele.
@@ -32,11 +46,20 @@ O Arduino possui um conversor analógico para digital integrado em sua placa, an
 
 <p>Um LCD (Liquid Crystal Display) é um dispositivo eletrônico de exibição que utiliza cristais líquidos para produzir imagens e texto. Ele é composto por uma camada de cristal líquido entre dois polarizadores, que permitem controlar o fluxo de luz através do material e exibir informações na tela. Os LCDs são comuns em dispositivos eletrônicos como telefones celulares, relógios digitais, calculadoras, câmeras digitais, entre outros. Eles são capazes de exibir caracteres alfanuméricos e gráficos simples, além de consumir relativamente pouca energia. No Arduino, o LCD é geralmente utilizado para exibir informações de sensores ou outras variáveis em projetos eletrônicos. </p>
 
-<h3>Pensamento antes da codificação:<h3>
-    <p>LDR  lê valor alto => pouca incidência de luz => led verde aceso, led vermelho e amarelo apagado</p>
-    <p> LDR  lê valor entre X e y => média incidência de luz => led verde apagado, led amarelo aceso</p>
-    <p> LDR lê valor de y a Z  => alta incidência de luz => led vermelho aceso, liga o buzzer de 3 seg duração</p>
-    <p> TMP36 le valor menor que 0, alerta led vermelho aciona o buzzer, imprime no lcd Alerta</p>
-    <p> TMP36 le valor entre 8-16, alerta led verde , imprime no lcd BOM</p>
-    <p> TMP36 le valor maior que 17, alerta led amarelo , imprime no lcd MEDIO</p>
- </div>
+<h4>Pensamento antes da codificação:</h4>
+<ul>Temos as condiçoes:
+    <li>LDR  lê valor alto => pouca incidência de luz => led verde aceso, led vermelho e amarelo apagado</li>
+    <li> LDR  lê valor entre X e y => média incidência de luz => led verde apagado, led amarelo aceso</li>
+    <li> LDR lê valor de y a Z  => alta incidência de luz => led vermelho aceso, liga o buzzer de 3 seg duração</li>
+    <li> TMP36 le valor menor que 0, alerta led vermelho aciona o buzzer, imprime no lcd Alerta</li>
+    <li> TMP36 le valor entre 8-16, alerta led verde , imprime no lcd BOM</li>
+    <li> TMP36 le valor maior que 17, alerta led amarelo , imprime no lcd MEDIO</li>
+</ul>
+    <ul>Variaveis: 
+        <li> verde/bom: Luz BOM temp BOM</li>
+        <li> Amarelo/MEDIO: Luz med Tempo BOM  ou luz boa tempo medio</li>
+        <li> ruim: luz ou temp ruim</li>
+        <li> quando estiver entre a temp >=8 e temp<=16: BOA</li>
+        <li> temp<=0 e temp<=25: ruim</li>
+        <li> se não é temp: Media</li>
+ <ul>

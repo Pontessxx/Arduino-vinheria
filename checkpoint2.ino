@@ -33,7 +33,7 @@ void loop() {
   tensao = valorSensor * 5.0 / 1024.0; // encontra a tensao do sensor
   temperaturaC = ((tensao - 0.5) * 100.0); // converte para temperatura em graus Celsius
 
-  if ((lightValue <= 935 && lightValue>=755) && (temperaturaC>=16 && temperaturaC<=25)) {
+  if (lightValue <= 935 && lightValue>=755) {
     // Luminosidade media - liga led amarelo e desliga verde
     digitalWrite(GREEN_LED_PIN, LOW);
     digitalWrite(YELLOW_LED_PIN, HIGH);
@@ -42,6 +42,19 @@ void loop() {
     lcd.clear();
     lcd.setCursor(0, 0);
     lcd.print("LUZ: MEDIA");
+    lcd.setCursor(0, 1);
+    lcd.print("TEMP: MEDIA");
+    delay(2000);
+}
+else if((temperaturaC>=16 && temperaturaC<=25)&&(lightValue<=754)){
+    // Luminosidade media - liga led amarelo e desliga verde
+    digitalWrite(GREEN_LED_PIN, LOW);
+    digitalWrite(YELLOW_LED_PIN, HIGH);
+    digitalWrite(RED_LED_PIN, LOW);
+    noTone(BUZZER_PIN); // para o som do buzzer
+    lcd.clear();
+    lcd.setCursor(0, 0);
+    lcd.print("LUZ: BOM");
     lcd.setCursor(0, 1);
     lcd.print("TEMP: MEDIA");
     delay(2000);

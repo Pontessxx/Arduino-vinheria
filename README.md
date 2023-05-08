@@ -33,22 +33,34 @@ Sendo assim criamos um projeto utilizando o Arduino e outros materiais que possi
     <li>1	Sensor de temperatura [TMP36]</li>
     <li>Sensor de temperatura e umidade (DHT11)</li>
  </ul>
+
 <h4>Mas o que é o LDR:</h4>
 
 <p>Light Dependent Resistor, O LDR (Light Dependent Resistor) é um tipo de resistor que muda sua resistência elétrica conforme a intensidade de luz que incide sobre ele.
-Já os conversores analógico para digital do Arduino, são circuitos integrados que convertem um sinal analógico (contínuo) em um sinal digital (discreto), que pode ser processado pelo microcontrolador do Arduino. Permitindo que o microcontrolador do Arduino leia e interprete esses sinais.
-O Arduino possui um conversor analógico para digital integrado em sua placa, analógicos p/ digitais de 10 bits entre 0 e 1023. Usa a função “analogRead()” ler valor analógico de um pino especifico do Arduino</p>
+    Já os conversores analógico para digital do Arduino, são circuitos integrados que convertem um sinal analógico (contínuo) em um sinal digital (discreto), que pode ser processado pelo microcontrolador do Arduino. Permitindo que o microcontrolador do Arduino leia e interprete esses sinais.
+    O Arduino possui um conversor analógico para digital integrado em sua placa, analógicos p/ digitais de 10 bits entre 0 e 1023. Usa a função “analogRead()” ler valor analógico de um pino especifico do Arduino</p>
 
 <h4>Sensor de Temperatura e Umidade (DHT11):</h4>
 <p>O sensor de temperatura e umidade DHT11 é um dispositivo que permite medir a temperatura e a umidade relativa do ar. Ele possui um elemento sensor que captura essas grandezas e um circuito interno que converte os dados em sinais digitais. No projeto, o DHT11 é utilizado para monitorar a temperatura e a umidade do ambiente e fornecer essas informações ao Arduino.
-<h4>O que é TMP36:</p>
+<h4>O que é TMP36:</h4>
 
 <p>O sensor TMP36 é um sensor de temperatura que pode ser utilizado em projetos eletrônicos com microcontroladores, como o Arduino. Ele é capaz de medir temperaturas com uma precisão de ±2°C entre -40°C e +125°C e fornece a saída de tensão analógica proporcional à temperatura medida. Sua tensão de alimentação é de 2,7 a 5,5V e ele possui três terminais: um para a alimentação, outro para o terra e um terceiro para a saída de sinal. Ele é um sensor fácil de utilizar e muito utilizado em projetos de automação residencial, controle de temperatura de ambientes, dentre outros.</p>
 
 <h4>O que é LCD:</h4>
 
 <p>Um LCD (Liquid Crystal Display) é um dispositivo eletrônico de exibição que utiliza cristais líquidos para produzir imagens e texto. Ele é composto por uma camada de cristal líquido entre dois polarizadores, que permitem controlar o fluxo de luz através do material e exibir informações na tela. Os LCDs são comuns em dispositivos eletrônicos como telefones celulares, relógios digitais, calculadoras, câmeras digitais, entre outros. Eles são capazes de exibir caracteres alfanuméricos e gráficos simples, além de consumir relativamente pouca energia. No Arduino, o LCD é geralmente utilizado para exibir informações de sensores ou outras variáveis em projetos eletrônicos. </p>
-
+<h4>Requisitos: </h4>
+<ul>
+    <li>Enquanto o ambiente estiver escuro, o LED Verde deve ficar aceso.</li>
+    <li>Enquanto o ambiente estiver a meia luz, o LED amarelo deve ficar aceso e a mensagem "Ambiente a meia luz" deve ser mostrada no Display.</li>
+    <li>Enquanto o ambiente estiver totalmente iluminado, o LED vermelho deve ficar aceso e a mensagem "Ambiente muito claro" deve ser mostrada no Display.</li>
+    <li>Enquanto o ambiente estiver totalmente iluminado, o Buzzer deve ficar ligado continuamente.</li>
+    <li>Enquanto o ambiente estiver com uma temperatura entre 10°C e 15°C, o Display deve informar "Temperatura OK" e também mostrar o valor da temperatura.</li>
+    <li>Enquanto o ambiente estiver com uma umidade entre 50% e 70%, o Display deve informar "Umidade OK" e também mostrar o valor da umidade.</li>
+    <li>Os valores apresentados no Display devem ser a média de pelo menos 5 leituras dos sensores, e os valores devem ser atualizados a cada 5 segundos.</li>
+    <li>Enquanto a temperatura estiver fora da faixa ideal, o LED Amarelo deve ficar aceso e o Buzzer deve ligar continuamente. O Display deve informar "Temp. Alta" para valores acima de 15°C e "Temp. Baixa" para valores abaixo de 10°C, mostrando também o valor da temperatura.</li>
+    <li>Enquanto a umidade estiver fora da faixa ideal, o LED Vermelho deve ficar aceso e o Buzzer deve ligar continuamente. O Display deve informar "Umidade Alta" para valores acima de 70% e "Umidade Baixa" para valores abaixo de 50%, mostrando também o valor da umidade.</li>
+</ul>
 <h4>Pensamento antes da codificação:</h4>
 <ul>Temos as condiçoes:
     <li>LDR  lê valor alto => pouca incidência de luz => led verde aceso, led vermelho e amarelo apagado</li>

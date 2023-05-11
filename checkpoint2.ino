@@ -1,132 +1,161 @@
 #include <LiquidCrystal.h>
-int GREEN_LED_PIN = 2;   // pino digital do led verde
-int YELLOW_LED_PIN = 3;  // pino digital do led amarelo
-int RED_LED_PIN = 4;     // pino digital do led vermelho
-int BUZZER_PIN = 5;      // pino digital do buzzer
 
-int lightValue = 0;    // variavel para armazenar a leitura do LDR
-int greenState = LOW;  // estado do led verde
-int yellowState = LOW; // estado do led amarelo
-int redState = LOW;    // estado do led vermelho
+// Definindo as constantes dos pinos
+const int temperatureSensorPin = A0;
+const int humiditySensorPin = A1;
+const int LDRPin = A2;
+const int GREEN_LED_PIN = 2;
+const int YELLOW_LED_PIN = 3;
+const int RED_LED_PIN = 4;
+const int BUZZER_PIN = 10;
+const int LCD_RS = 12;
+const int LCD_EN = 11;
+const int LCD_D4 = 8;
+const int LCD_D5 = 7;
+const int LCD_D6 = 6;
+const int LCD_D7 = 5;
 
-const int LDR_PIN = A0; // variavel para armazenar o valor lido pelo ADC
-const int sensorPin = A5;
-float valorSensor;
-float temperaturaC, temperaturaF;
-float tensao = 0.0;    // variavel para armazenar a tensao
-float tensao_ms = 0.0; 
-LiquidCrystal lcd(12,11,9,8,7,6);
+// Inicialização do LCD
+LiquidCrystal lcd(LCD_RS, LCD_EN, LCD_D4, LCD_D5, LCD_D6, LCD_D7);
+
 void setup() {
   Serial.begin(9600);
-  pinMode(LDR_PIN, INPUT);
   pinMode(GREEN_LED_PIN, OUTPUT);
   pinMode(YELLOW_LED_PIN, OUTPUT);
   pinMode(RED_LED_PIN, OUTPUT);
   pinMode(BUZZER_PIN, OUTPUT);
-  pinMode(sensorPin, INPUT);
   lcd.begin(16, 2);
 }
-void loop() {
-  // Leitura do valor do LDR
-  lightValue = analogRead(LDR_PIN);
-  valorSensor = analogRead(sensorPin);
-  tensao = valorSensor * 5.0 / 1024.0; // encontra a tensao do sensor
-  temperaturaC = ((tensao - 0.5) * 100.0); // converte para temperatura em graus Celsius
 
-  if (lightValue <= 935 && lightValue>=755) {
-    // Luminosidade media - liga led amarelo e desliga verde
-    digitalWrite(GREEN_LED_PIN, LOW);
-    digitalWrite(YELLOW_LED_PIN, HIGH);
-    digitalWrite(RED_LED_PIN, LOW);
-    noTone(BUZZER_PIN); // para o som do buzzer
-    lcd.clear();
-    lcd.setCursor(0, 0);
-    lcd.print("LUZ: MEDIA");
-    lcd.setCursor(0, 1);
-    lcd.print("TEMP: MEDIA");
-    delay(2000);
-}
-else if((temperaturaC>=16 && temperaturaC<=25)&&(lightValue<=754)){
-    // Luminosidade media - liga led amarelo e desliga verde
-    digitalWrite(GREEN_LED_PIN, LOW);
-    digitalWrite(YELLOW_LED_PIN, HIGH);
-    digitalWrite(RED_LED_PIN, LOW);
-    noTone(BUZZER_PIN); // para o som do buzzer
-    lcd.clear();
-    lcd.setCursor(0, 0);
-    lcd.print("LUZ: BOM");
-    lcd.setCursor(0, 1);
-    lcd.print("TEMP: MEDIA");
-    delay(2000);
-} else if ((lightValue >= 935) || (temperaturaC<=0 ||temperaturaC>=26)) {
-    // Luminosidade alta - liga led vermelho e desliga verde e amarelo
+void loop() {
+  int temperature = readTemperature();
+  int humidity = readHumidity();
+  int lightLevel = readLightLevel();
+  // Exibição dos valores no monitor serial
+  Serial.print("Temperature: ");
+  Serial.print(temperature, 1);
+  Serial.print(" °C / ");
+  Serial.println();
+
+  Serial.print("Humidity: ");
+  Serial.print(humidity);
+  Serial.println("%");
+  Serial.print("Leitura: ");
+  Serial.print(lightLevel);
+  Serial.print("\t");
+
+  // Verificar a condição do ambiente
+  if (lightLevel >= 950 || temperature >= 15 || humidity > 70 ||temperature <=9) {
+    // Ambiente ruim - LED vermelho aceso
     digitalWrite(GREEN_LED_PIN, LOW);
     digitalWrite(YELLOW_LED_PIN, LOW);
     digitalWrite(RED_LED_PIN, HIGH);
-    tone(BUZZER_PIN, 1000);// toca um som de 1kHz no buzzer
-    delay(1000);
-    tone(BUZZER_PIN, 2000);
+    tone(BUZZER_PIN, 1000);
+    umiPrint();
+    luzPrint();
+    tempPrint();
+  } else if (lightLevel >= 650 && lightLevel<=949) {
+    // Ambiente mediano - LED amarelo aceso
+    digitalWrite(GREEN_LED_PIN, LOW);
+    digitalWrite(YELLOW_LED_PIN, HIGH);
+    digitalWrite(RED_LED_PIN, LOW);
     noTone(BUZZER_PIN);
-    lcd.clear();
-    lcd.setCursor(0, 0);
-    lcd.print("ALERTA!!!");
-    lcd.setCursor(0, 1);
-    lcd.print("Condicoes ruins");
-    delay(2000);
-}
-else{
-  // Luminosidade baixa - liga led verde e desliga os outros
-  digitalWrite(GREEN_LED_PIN, HIGH);
-  digitalWrite(YELLOW_LED_PIN, LOW);
-  digitalWrite(RED_LED_PIN, LOW);
-  noTone(BUZZER_PIN); // para o som do buzzer
-  lcd.clear();
-  lcd.setCursor(0, 0);
-  if (lightValue < 755) {
-    lcd.print("LUZ: BOA");
-  } else {
-    lcd.print("LUZ: BOA");
-  }
-    if (temperaturaC <= 16 && temperaturaC >= 8) {
-    lcd.setCursor(0, 1);
-    lcd.print("TEMP: BOA");
+    umiPrint();
+    luzPrint();
+    tempPrint();
+    }else if (lightLevel<=649 && (temperature >= 10 && temperature <= 15 || humidity<50)){
+    // Ambiente bom - LED verde aceso
     digitalWrite(GREEN_LED_PIN, HIGH);
     digitalWrite(YELLOW_LED_PIN, LOW);
     digitalWrite(RED_LED_PIN, LOW);
-} else if (temperaturaC >= 17 && temperaturaC <= 25) {
-      lcd.setCursor(0, 1);
-    lcd.print("TEMP: MEDIA");
-    digitalWrite(GREEN_LED_PIN, LOW);
-    digitalWrite(YELLOW_LED_PIN, HIGH);
-    digitalWrite(RED_LED_PIN, LOW);
-} else {
-      lcd.setCursor(0, 1);
-    lcd.print("TEMP: RUIM");
-    digitalWrite(GREEN_LED_PIN, LOW);
-    digitalWrite(YELLOW_LED_PIN, LOW);
-    digitalWrite(RED_LED_PIN, HIGH);
+    noTone(BUZZER_PIN);
+    umiPrint();
+    luzPrint();
+    tempPrint();
+  }
+
+  delay(5000);  // Aguardar 5 segundos antes de atualizar os valores novamente
 }
-    delay(2000);
+int readTemperature() {
+  int rawValue = analogRead(temperatureSensorPin);
+  double voltage = (rawValue / 1023.0) * 5000; // 5000 para obter milivolts
+  double celsius = (voltage - 500) * 0.1; // 500 é o deslocamento
+  return celsius;
 }
-  lcd.setCursor(0, 1);
-  lcd.print("TEMP: "); // imprime o texto "Temperatura:"
-  lcd.print(temperaturaC);
-  lcd.print("C");
-  lcd.setCursor(0, 0);
-  lcd.print("LUZ: ");
-  lcd.print(lightValue);
-  lcd.print(" ");
-  delay(2000);
-  // imprime valor lido pelo arduino (0 a 1023)
-  tensao_ms = (lightValue * 5.0) / 1024.0;
-  Serial.print("Leitura: ");
-  Serial.print(lightValue);
-  Serial.print("\t"); // tabulacao
-  Serial.print("Temperatura atual (°C): "); // Printando em graus Celsius
-  Serial.print(temperaturaC);
-  Serial.print("\t");
-  Serial.print("Voltagem: ");
-  Serial.print(tensao_ms);
-  Serial.println("V");
-  delay(1000);
+int readHumidity() {
+  int rawValue = analogRead(humiditySensorPin);
+  int percentage = map(rawValue, 0, 1023, 0, 100);
+  return percentage;
+}
+int readLightLevel() {
+  int rawValue = analogRead(LDRPin);
+
+  return rawValue;
+}
+int luzPrint(){
+    
+    int lightLevel = readLightLevel();
+    if (lightLevel >= 950 ){
+        lcd.setCursor(0, 0);
+        lcd.print("Ambiente:  ");
+        lcd.setCursor(0, 1);
+        lcd.print("Muito claro    ");
+        delay(2000);
+        lcd.clear();
+    }else if (lightLevel >= 650 && lightLevel<=949){
+        lcd.setCursor(0, 0);
+        lcd.print("Ambiente:  ");
+        lcd.setCursor(0, 1);
+        lcd.print("A meia Luz    ");
+        delay(2000);
+        lcd.clear();
+    }else if (lightLevel<=649){
+        lcd.setCursor(0, 0);
+        lcd.print("Ambiente    ");
+        lcd.setCursor(0, 1);
+        lcd.print("Perfeito       ");
+        delay(2000);
+        lcd.clear();
+    }
+}
+int tempPrint(){
+    int temperature = readTemperature();
+    
+    if(temperature <=9 || temperature >=15){
+        lcd.setCursor(0, 0);
+        lcd.print("Temp. ALTA    ");
+        lcd.setCursor(0, 1);
+        lcd.print("Temp. = ");
+        lcd.print(temperature);
+        lcd.print(" C");
+        delay(2000);
+        lcd.clear();
+    }else{
+        lcd.setCursor(0, 0);
+        lcd.print("Temp. OK    ");
+        lcd.setCursor(0, 1);
+        lcd.print("Temp. = ");
+        lcd.print(temperature);
+        lcd.print(" C");
+        delay(2000);
+        lcd.clear();
+    }
+}
+int umiPrint(){
+    int humidity = readHumidity();
+    if (humidity>70){
+        lcd.print("Umidade ALTA   ");
+        lcd.setCursor(0, 1);
+        lcd.print("Umid. = ");
+        lcd.print(humidity);
+        lcd.print(" %");
+    }else{
+        lcd.print("Umidade BAIXA   ");
+        lcd.setCursor(0, 1);
+        lcd.print("Umid. = ");
+        lcd.print(humidity);
+        lcd.print(" %");
+        delay(2000);
+        lcd.clear();
+    }
 }
